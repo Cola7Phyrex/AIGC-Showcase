@@ -27,7 +27,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
   const [transitionProgress, setTransitionProgress] = useState(0);
   const [viewport, setViewport] = useState({ width: 1440, height: 900 });
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const transitionRef = useRef<HTMLElement>(null);
+  const worksRef = useRef<HTMLElement>(null);
   const navigationLocked = useRef(false);
 
   const categories = useMemo(
@@ -56,9 +56,13 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    transitionRef.current?.scrollIntoView({
+    const element = worksRef.current;
+    if (!element) return;
+    const sectionTop = window.scrollY + element.getBoundingClientRect().top;
+    const target = sectionTop + element.offsetHeight - window.innerHeight;
+    window.scrollTo({
+      top: target,
       behavior: reducedMotion ? "auto" : "smooth",
-      block: "start",
     });
   };
 
@@ -100,7 +104,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
   useEffect(() => {
     let frame = 0;
     const updateTransition = () => {
-      const element = transitionRef.current;
+      const element = worksRef.current;
       if (!element) return;
       const rect = element.getBoundingClientRect();
       const travel = Math.max(1, element.offsetHeight - window.innerHeight);
@@ -156,17 +160,15 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     viewport.height * 0.5,
     easedProgress,
   );
-  const transitionStyle = {
-    "--card-accent": activeProject.accent,
-    "--card-accent-secondary": activeProject.accentSecondary,
+  const cardsSpaceStyle = {
     "--transition-progress": transitionProgress,
     width: `${cardWidth}px`,
     height: `${cardHeight}px`,
     left: `${cardLeft}px`,
     top: `${cardTop}px`,
-    borderRadius: `${mix(mobile ? 10 : 16, 0, easedProgress)}px`,
-    viewTransitionName: `project-${activeProject.slug}`,
   } as CSSProperties;
+
+  const interfaceOpacity = clamp(1 - transitionProgress * 2.4);
 
   const themeStyle = {
     "--active-accent": activeProject.accent,
@@ -177,24 +179,12 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     <main className="portfolio-experience" style={themeStyle}>
       <FluidIntro />
 
-      <section id="works" className="portfolio-shell" aria-label="作品一览">
-        <header className="site-header">
-          <a className="wordmark" href="#top" aria-label="返回 Phyrex 开场">
-            <span>PHYREX</span>
-            <span>WORKS</span>
-          </a>
-
-          <div className="header-meta" aria-hidden="true">
-            <span>SELECTED WORKS</span>
-            <span>12 PROJECTS</span>
-          </div>
-
-          <nav className="header-actions" aria-label="作品浏览工具">
-            <button onClick={() => setOverlay("index")}>INDEX</button>
-            <button onClick={() => setOverlay("filter")}>FILTER</button>
-          </nav>
-        </header>
-
+      <section
+        ref={worksRef}
+        id="works"
+        className="portfolio-shell"
+        aria-label="作品一览"
+      >
         <section
           className="project-stage"
           aria-label="项目空间画廊"
@@ -215,15 +205,48 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             touchStart.current = null;
           }}
         >
-          <div className="ambient-grid" aria-hidden="true" />
-          <div className="ambient-glow" aria-hidden="true" />
+          <header className="site-header" style={{ opacity: interfaceOpacity }}>
+            <a className="wordmark" href="#top" aria-label="返回 Phyrex 开场">
+              <span>PHYREX</span>
+              <span>WORKS</span>
+            </a>
 
-          <div className="works-section-label" aria-hidden="true">
+            <div className="header-meta" aria-hidden="true">
+              <span>SELECTED WORKS</span>
+              <span>12 PROJECTS</span>
+            </div>
+
+            <nav className="header-actions" aria-label="作品浏览工具">
+              <button onClick={() => setOverlay("index")}>INDEX</button>
+              <button onClick={() => setOverlay("filter")}>FILTER</button>
+            </nav>
+          </header>
+
+          <div
+            className="ambient-grid"
+            style={{ opacity: 0.55 * interfaceOpacity }}
+            aria-hidden="true"
+          />
+          <div
+            className="ambient-glow"
+            style={{ opacity: 0.12 * interfaceOpacity }}
+            aria-hidden="true"
+          />
+
+          <div
+            className="works-section-label"
+            style={{ opacity: interfaceOpacity }}
+            aria-hidden="true"
+          >
             <span>02</span>
             <span>WORKS / ARCHIVE</span>
           </div>
 
-          <div className="project-copy" aria-live="polite">
+          <div
+            className="project-copy"
+            style={{ opacity: interfaceOpacity }}
+            aria-live="polite"
+          >
             <div className="eyebrow-row">
               <span>{String(activeProject.order).padStart(2, "0")}</span>
               <span>{activeProject.type}</span>
@@ -252,12 +275,19 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             </div>
           </div>
 
-          <div className="cards-space" aria-label="项目封面">
+          <div
+            className="cards-space"
+            style={cardsSpaceStyle}
+            aria-label="项目封面"
+          >
             {visibleProjects.map((project, index) => {
               const difference = index - activeIndex;
               const distance = Math.abs(difference);
               const isActive = difference === 0;
               const isVisible = distance <= 2;
+              const carouselOpacity = isVisible
+                ? Math.max(0.1, 1 - distance * 0.42)
+                : 0;
               const cardStyle = {
                 "--card-accent": project.accent,
                 "--card-accent-secondary": project.accentSecondary,
@@ -267,9 +297,18 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                   0.64,
                   1 - distance * 0.12,
                 )})`,
-                opacity: isVisible ? Math.max(0.1, 1 - distance * 0.42) : 0,
+                opacity: isActive
+                  ? 1
+                  : carouselOpacity * clamp(1 - transitionProgress * 2.5),
                 zIndex: 20 - distance,
-                pointerEvents: isVisible ? "auto" : "none",
+                pointerEvents:
+                  isVisible && transitionProgress < 0.08 ? "auto" : "none",
+                borderRadius: isActive
+                  ? `${mix(mobile ? 10 : 16, 0, easedProgress)}px`
+                  : undefined,
+                viewTransitionName: isActive
+                  ? `project-${project.slug}`
+                  : "none",
               } as CSSProperties;
 
               return (
@@ -290,6 +329,15 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                       <span>PROJECT</span>
                       <strong>{project.category}</strong>
                     </div>
+                    {isActive && (
+                      <div
+                        className="expansion-card-title"
+                        style={{ opacity: clamp((transitionProgress - 0.45) * 2) }}
+                      >
+                        <span>{project.category}</span>
+                        <strong>{project.title}</strong>
+                      </div>
+                    )}
                   </div>
 
                   <button
@@ -309,7 +357,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             })}
           </div>
 
-          <div className="stage-controls">
+          <div className="stage-controls" style={{ opacity: interfaceOpacity }}>
             <button onClick={() => go(-1)} aria-label="上一个项目">
               ←
             </button>
@@ -329,45 +377,23 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             </button>
           </div>
 
-          <button className="scroll-cue scroll-cue-button" onClick={openProject}>
+          <button
+            className="scroll-cue scroll-cue-button"
+            style={{ opacity: interfaceOpacity }}
+            onClick={openProject}
+          >
             <span>SCROLL TO EXPAND</span>
             <i />
           </button>
-        </section>
-      </section>
 
-      <section
-        ref={transitionRef}
-        className="project-expansion-track"
-        aria-label={`进入 ${activeProject.title}`}
-      >
-        <div className="project-expansion-sticky">
-          <div className="expansion-backdrop" aria-hidden="true" />
-          <div className="expansion-copy" aria-hidden="true">
-            <span>{String(activeProject.order).padStart(2, "0")} / 12</span>
-            <strong>{activeProject.title}</strong>
-            <small>SCROLLING INTO PROJECT</small>
-          </div>
-
-          <div className="expansion-card" style={transitionStyle}>
-            <div className="project-card-visual">
-              <div className="cover-grid" />
-              <div className="cover-orbit cover-orbit-a" />
-              <div className="cover-orbit cover-orbit-b" />
-              <div className="cover-number">
-                {String(activeProject.order).padStart(2, "0")}
-              </div>
-              <div className="expansion-card-title">
-                <span>{activeProject.category}</span>
-                <strong>{activeProject.title}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className="expansion-progress" aria-hidden="true">
+          <div
+            className="expansion-progress"
+            style={{ opacity: transitionProgress > 0 ? 1 : 0 }}
+            aria-hidden="true"
+          >
             <span style={{ width: `${transitionProgress * 100}%` }} />
           </div>
-        </div>
+        </section>
       </section>
 
       {overlay === "index" && (
