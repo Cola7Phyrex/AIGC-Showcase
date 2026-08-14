@@ -35,8 +35,10 @@ test("server-renders the twelve-project spatial index", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /AIGC Works — 12 Projects/i);
+  assert.match(html, /Phyrex — AIGC Works/i);
   assert.match(html, /12 PROJECTS/);
+  assert.match(html, /Phyrex/);
+  assert.match(html, /REALTIME DISTORTION/);
   assert.match(html, /项目名称 01/);
   assert.match(html, /核心 AIGC 工具 A/);
   assert.match(html, /https:\/\/portfolio\.example\/og\.png/);

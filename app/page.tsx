@@ -16,27 +16,27 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialImage = `${origin}/og.png`;
 
   return {
-    title: "AIGC Works — 12 Projects",
-    description: "十二个 AIGC 项目的沉浸式作品展厅。",
+    title: "Phyrex — AIGC Works",
+    description: "以流体交互开场的十二项 AIGC 沉浸式作品展厅。",
     openGraph: {
       type: "website",
       locale: "zh_CN",
-      title: "AIGC Works — 12 Projects",
-      description: "十二个 AIGC 项目的沉浸式作品展厅。",
+      title: "Phyrex — AIGC Works",
+      description: "以流体交互开场的十二项 AIGC 沉浸式作品展厅。",
       url: origin,
       images: [
         {
           url: socialImage,
           width: 1200,
           height: 630,
-          alt: "AIGC Works — 12 Projects",
+          alt: "Phyrex — AIGC Works",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "AIGC Works — 12 Projects",
-      description: "十二个 AIGC 项目的沉浸式作品展厅。",
+      title: "Phyrex — AIGC Works",
+      description: "以流体交互开场的十二项 AIGC 沉浸式作品展厅。",
       images: [socialImage],
     },
   };
