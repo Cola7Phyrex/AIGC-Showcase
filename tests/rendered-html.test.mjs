@@ -53,4 +53,5 @@ test("server-renders a complete project detail page", async () => {
   assert.match(html, /图片 \/ 视频预览/);
   assert.match(html, /内容链接 \/ 源文件/);
   assert.match(html, /待添加网址/);
+  assert.equal((html.match(/href="\/#works"/g) ?? []).length, 2);
 });

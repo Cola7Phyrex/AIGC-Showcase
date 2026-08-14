@@ -102,6 +102,29 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
   }, []);
 
   useEffect(() => {
+    if (window.location.hash !== "#works") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    navigationLocked.current = true;
+    let unlockFrame = 0;
+
+    const landingFrame = requestAnimationFrame(() => {
+      worksRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      setTransitionProgress(0);
+      unlockFrame = requestAnimationFrame(() => {
+        navigationLocked.current = false;
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(landingFrame);
+      cancelAnimationFrame(unlockFrame);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
     let frame = 0;
     const updateTransition = () => {
       const element = worksRef.current;

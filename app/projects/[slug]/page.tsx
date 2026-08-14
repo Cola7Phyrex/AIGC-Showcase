@@ -43,14 +43,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <main className="detail-page" style={themeStyle}>
       <header className="detail-header">
-        <Link className="wordmark wordmark-link" href="/">
+        <Link className="wordmark wordmark-link" href="/#works">
           <span>AIGC</span>
           <span>WORKS</span>
         </Link>
         <div className="detail-header-center">
           {String(project.order).padStart(2, "0")} / 12
         </div>
-        <Link className="back-link" href="/">
+        <Link className="back-link" href="/#works">
           ← BACK TO INDEX
         </Link>
       </header>
