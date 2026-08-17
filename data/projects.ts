@@ -10,6 +10,7 @@ export type ProjectMedia = {
   src?: string;
   alt?: string;
   aspectRatio?: string;
+  layout?: "full" | "tile";
 };
 
 export type ProjectLink = {
@@ -127,6 +128,7 @@ export const projects: Project[] = [
         src: "/projects/project-01/case01-1.png",
         alt: "Lornveil 雨冠危机的玩家导入材料页面",
         aspectRatio: "2864 / 2022",
+        layout: "full",
       },
       {
         id: "project-01-case-02",
@@ -135,7 +137,8 @@ export const projects: Project[] = [
         label: "开场问题与场景",
         src: "/projects/project-01/case01-2.png",
         alt: "Lornveil 雨冠危机的开场问题与场景页面",
-        aspectRatio: "2862 / 2026",
+        aspectRatio: "2864 / 2022",
+        layout: "full",
       },
       {
         id: "project-01-case-03",
@@ -145,6 +148,7 @@ export const projects: Project[] = [
         src: "/projects/project-01/case01-3.jpg",
         alt: "Lornveil 世界地图",
         aspectRatio: "1412 / 941",
+        layout: "tile",
       },
       {
         id: "project-01-case-04",
@@ -154,6 +158,7 @@ export const projects: Project[] = [
         src: "/projects/project-01/case01-4.jpg",
         alt: "艾蕾娜・洛恩维尔角色设定图",
         aspectRatio: "1412 / 941",
+        layout: "tile",
       },
       {
         id: "project-01-case-05",
@@ -163,6 +168,7 @@ export const projects: Project[] = [
         src: "/projects/project-01/case01-5.jpg",
         alt: "洛恩维尔王城总览地图",
         aspectRatio: "1412 / 941",
+        layout: "tile",
       },
     ],
     links: [
@@ -172,7 +178,14 @@ export const projects: Project[] = [
         url: "https://xhslink.cn/o/ADemJJbkaC",
       },
     ],
-    files: [],
+    files: [
+      {
+        label: "洛恩维尔雨冠危机 DM 手册",
+        fileName: "file01.pdf",
+        fileSize: "3.8 MB",
+        url: "/projects/project-01/file01.pdf",
+      },
+    ],
   }),
   createProject({
     order: 2,

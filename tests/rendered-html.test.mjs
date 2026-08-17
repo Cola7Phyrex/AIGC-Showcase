@@ -56,6 +56,8 @@ test("server-renders a complete project detail page", async () => {
   assert.match(html, /https:\/\/xhslink\.cn\/o\/ADemJJbkaC/);
   assert.match(html, /\/projects\/project-01\/cover01\.jpg/);
   assert.match(html, /\/projects\/project-01\/case01-5\.jpg/);
+  assert.match(html, /\/projects\/project-01\/file01\.pdf/);
+  assert.match(html, /洛恩维尔雨冠危机 DM 手册/);
   assert.equal((html.match(/href="\/#works"/g) ?? []).length, 2);
   assert.match(html, /WHY IT STANDS OUT/);
   assert.match(html, /href="\/projects\/project-13"/);

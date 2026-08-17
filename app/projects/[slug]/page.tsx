@@ -180,8 +180,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {project.media.map((media, index) => (
             <figure
               className={`media-card media-${media.orientation}${
-                index === 0 ? " media-featured" : ""
-              }`}
+                media.layout === "full" || (index === 0 && !media.layout)
+                  ? " media-featured"
+                  : ""
+              }${media.layout === "tile" ? " media-tile" : ""}`}
               key={media.id}
             >
               {media.src ? (
