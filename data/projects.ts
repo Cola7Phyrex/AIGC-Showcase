@@ -1,5 +1,5 @@
-export type ProjectStatus = "已完成" | "持续更新" | "开发中";
-export type StatusTone = "complete" | "updating" | "building";
+export type ProjectStatus = "已完成" | "可体验" | "开发中";
+export type StatusTone = "complete" | "available" | "building";
 export type MediaOrientation = "landscape" | "portrait";
 
 export type ProjectMedia = {
@@ -7,6 +7,9 @@ export type ProjectMedia = {
   kind: "image" | "video";
   orientation: MediaOrientation;
   label: string;
+  src?: string;
+  alt?: string;
+  aspectRatio?: string;
 };
 
 export type ProjectLink = {
@@ -32,108 +35,59 @@ export type Project = {
   coreTool: string;
   auxiliaryTools: string[];
   description: string;
+  highlight: string;
   status: ProjectStatus;
   statusTone: StatusTone;
   accent: string;
   accentSecondary: string;
+  coverImage?: string;
+  coverAlt?: string;
   media: ProjectMedia[];
   links: ProjectLink[];
   files: ProjectFile[];
 };
 
-const categories = [
-  "游戏与互动",
-  "视频与动画",
-  "应用与工具",
-  "Agent 应用",
-  "自动化",
-  "互动叙事",
-] as const;
+type ProjectDraft = Omit<Project, "media" | "links" | "files"> & {
+  media?: ProjectMedia[];
+  links?: ProjectLink[];
+  files?: ProjectFile[];
+};
 
-const palettes = [
-  ["#7c5cff", "#20d8ff"],
-  ["#ff496c", "#ffb54a"],
-  ["#21d4a5", "#1b8dff"],
-  ["#ff6ee7", "#795cff"],
-  ["#f3de5b", "#ff6a3d"],
-  ["#63e6ff", "#6467ff"],
-  ["#9cff6a", "#1ecab8"],
-  ["#ff8f66", "#ff3d91"],
-  ["#b88aff", "#4169ff"],
-  ["#54e0c7", "#a8ff6a"],
-  ["#ffcc4d", "#ff5f78"],
-  ["#49bfff", "#9a5cff"],
-] as const;
-
-const statuses: Array<{ status: ProjectStatus; tone: StatusTone }> = [
-  { status: "已完成", tone: "complete" },
-  { status: "持续更新", tone: "updating" },
-  { status: "开发中", tone: "building" },
-];
-
-const platformSets = [
-  ["Web", "TypeScript", "Canvas"],
-  ["Video", "After Effects", "ComfyUI"],
-  ["iOS", "SwiftUI", "CloudKit"],
-  ["macOS", "Python", "Automation"],
-  ["H5", "React", "Web Audio"],
-  ["PDF", "Agent", "Interactive Story"],
-] as const;
-
-export const projects: Project[] = Array.from({ length: 12 }, (_, index) => {
-  const order = index + 1;
-  const category = categories[index % categories.length];
-  const palette = palettes[index];
-  const status = statuses[index % statuses.length];
-  const platforms = platformSets[index % platformSets.length];
-
+function createProject(project: ProjectDraft): Project {
   return {
-    order,
-    slug: `project-${String(order).padStart(2, "0")}`,
-    title: `项目名称 ${String(order).padStart(2, "0")}`,
-    type: `${category} · 项目类型占位`,
-    category,
-    platforms: [...platforms],
-    coreTool: `核心 AIGC 工具 ${String.fromCharCode(65 + (index % 6))}`,
-    auxiliaryTools: ["辅助工具 01", "辅助工具 02"],
-    description:
-      "这里将填写项目的完整介绍：它为什么被制作、解决了什么问题、用户可以获得怎样的体验，以及你在项目中完成的关键判断与工作。当前文字用于验证详情页的阅读节奏和排版宽度。",
-    status: status.status,
-    statusTone: status.tone,
-    accent: palette[0],
-    accentSecondary: palette[1],
-    media: [
+    ...project,
+    media: project.media ?? [
       {
-        id: `${order}-hero`,
+        id: `${project.slug}-hero`,
         kind: "video",
         orientation: "landscape",
         label: "横版视频 / 主演示画面",
       },
       {
-        id: `${order}-portrait-a`,
+        id: `${project.slug}-portrait-a`,
         kind: "image",
         orientation: "portrait",
         label: "竖版截图 01",
       },
       {
-        id: `${order}-portrait-b`,
+        id: `${project.slug}-portrait-b`,
         kind: "image",
         orientation: "portrait",
         label: "竖版截图 02",
       },
       {
-        id: `${order}-wide`,
+        id: `${project.slug}-wide`,
         kind: "image",
         orientation: "landscape",
         label: "横版截图 / 制作过程",
       },
     ],
-    links: [
+    links: project.links ?? [
       { label: "在线体验", kind: "website", url: null },
       { label: "演示视频", kind: "video", url: null },
       { label: "代码仓库", kind: "repository", url: null },
     ],
-    files: [
+    files: project.files ?? [
       {
         label: "项目源文件",
         fileName: "source-file-placeholder.zip",
@@ -142,7 +96,301 @@ export const projects: Project[] = Array.from({ length: 12 }, (_, index) => {
       },
     ],
   };
-});
+}
+
+export const projects: Project[] = [
+  createProject({
+    order: 1,
+    slug: "project-01",
+    title: "Lornveil 雨冠危机",
+    type: "DND模组",
+    category: "互动叙事",
+    platforms: ["PDF"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: ["GPT Image 2"],
+    description:
+      "一套可以直接用于跑团的完整恐怖冒险模组。围绕 Lornveil 的世界、事件时间线和人物关系，为 DM 提供从备团到现场主持所需的完整内容。",
+    highlight:
+      "它不只是一篇故事，而是一套可以真正开团的产品。完整版包含 DM 手册、世界地图、战斗地图、角色与怪物设定、章节氛围图、关键线索逻辑图和 DM 速查表。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#7c5cff",
+    accentSecondary: "#20d8ff",
+    coverImage: "/projects/project-01/cover01.jpg",
+    coverAlt: "Lornveil 雨冠危机 D&D 冒险模组封面",
+    media: [
+      {
+        id: "project-01-case-01",
+        kind: "image",
+        orientation: "landscape",
+        label: "玩家导入材料",
+        src: "/projects/project-01/case01-1.png",
+        alt: "Lornveil 雨冠危机的玩家导入材料页面",
+        aspectRatio: "2864 / 2022",
+      },
+      {
+        id: "project-01-case-02",
+        kind: "image",
+        orientation: "landscape",
+        label: "开场问题与场景",
+        src: "/projects/project-01/case01-2.png",
+        alt: "Lornveil 雨冠危机的开场问题与场景页面",
+        aspectRatio: "2862 / 2026",
+      },
+      {
+        id: "project-01-case-03",
+        kind: "image",
+        orientation: "landscape",
+        label: "Lornveil 世界地图",
+        src: "/projects/project-01/case01-3.jpg",
+        alt: "Lornveil 世界地图",
+        aspectRatio: "1412 / 941",
+      },
+      {
+        id: "project-01-case-04",
+        kind: "image",
+        orientation: "landscape",
+        label: "艾蕾娜・洛恩维尔角色设定",
+        src: "/projects/project-01/case01-4.jpg",
+        alt: "艾蕾娜・洛恩维尔角色设定图",
+        aspectRatio: "1412 / 941",
+      },
+      {
+        id: "project-01-case-05",
+        kind: "image",
+        orientation: "landscape",
+        label: "洛恩维尔王城总览",
+        src: "/projects/project-01/case01-5.jpg",
+        alt: "洛恩维尔王城总览地图",
+        aspectRatio: "1412 / 941",
+      },
+    ],
+    links: [
+      {
+        label: "小红书作品页",
+        kind: "website",
+        url: "https://xhslink.cn/o/ADemJJbkaC",
+      },
+    ],
+    files: [],
+  }),
+  createProject({
+    order: 2,
+    slug: "project-02",
+    title: "Lornveil — DM Agent",
+    type: "Agent",
+    category: "Agent 应用",
+    platforms: ["本地 Agent", "OpenClaw"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: ["GPT Image 2"],
+    description:
+      "把同名模组转化为可以独自体验的 Agent 跑团版本。Agent 负责主持剧情、处理规则与角色行动，让没有固定团友的玩家也能完整体验模组。",
+    highlight:
+      "从一本给人类 DM 使用的模组，进一步转换成可执行的 Agent 叙事系统。提示词经过多轮迭代和对抗测试，会主动避免剧透，也不会轻易接受玩家的试探与“贿赂”——当然，特别擅长 AI 社工的玩家仍然可以来挑战。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#b88aff",
+    accentSecondary: "#4169ff",
+  }),
+  createProject({
+    order: 3,
+    slug: "project-03",
+    title: "DND Arena",
+    type: "基于 D&D 5e 规则的角色构筑与战斗测试平台",
+    category: "游戏与互动",
+    platforms: ["HTML", "Web"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: ["GPT Image 2"],
+    description:
+      "用于测试不同 D&D 角色 Build 的实际强度，提供 PvP 和 PvE 模式。玩家可以自定义角色卡、战斗模式与地图地形，并扩展规则书、职业、法术和其他内容。",
+    highlight:
+      "目前已经实现 2014 版《玩家手册》及《塔莎的万事坩埚》等核心规则。重点不是做一次性的“对砍模拟器”，而是搭建一套可以持续扩展的规则与战斗框架；后续计划加入四人 Boss 挑战、生存测试和社交场景测试。",
+    status: "可体验",
+    statusTone: "available",
+    accent: "#21d4a5",
+    accentSecondary: "#1b8dff",
+  }),
+  createProject({
+    order: 4,
+    slug: "project-04",
+    title: "Crazy Tide",
+    type: "MUD 风格的怪物创造与世界征服 H5 游戏",
+    category: "游戏与互动",
+    platforms: ["HTML", "H5"],
+    coreTool: "Codex / GPT-5.6",
+    auxiliaryTools: ["GPT Image 2"],
+    description:
+      "玩家收集元素，组合种族、职业与装备，创造一支由怪异生物组成的军团。征服失败后，可以返回亚空间继续改造怪物，再针对新的世界发起下一轮进攻。",
+    highlight:
+      "怪物不仅可以自由改造，胜利方式也不局限于正面战斗——既可以暴力征服，也可以渗透和破坏。游戏采用偏放置的节奏，并加入可互动的传奇原体助手。它吸收了来自“一位博士设计的知名卡牌游戏、桌面角色扮演游戏鼻祖，以及棋子很贵的大型策略游戏”的高浓度灵感。",
+    status: "开发中",
+    statusTone: "building",
+    accent: "#ff496c",
+    accentSecondary: "#ffb54a",
+  }),
+  createProject({
+    order: 5,
+    slug: "project-05",
+    title: "Yishu Neon",
+    type: "离线优先的易经与梅花易数 PWA 工具",
+    category: "应用与工具",
+    platforms: ["HTML", "PWA", "GitHub Pages"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: ["Kimi K2.5"],
+    description:
+      "把六十四卦资料、梅花易数起卦和个人类象笔记整合成一款随身工具。支持时间起卦和自定义起卦，可以查阅卦辞、爻辞、先后天八卦，并持续记录自己对“万物类象”的新发现。",
+    highlight:
+      "这是我的 vibe coding 开山之作。Kimi 参与需求分析、PRD 和原型规划，Codex 负责架构优化与 UI 实现。完成首次加载并安装到 iPhone 后，核心功能可以离线使用，体验接近原生 App，并通过 GitHub Pages 完成静态托管。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#63e6ff",
+    accentSecondary: "#6467ff",
+  }),
+  createProject({
+    order: 6,
+    slug: "project-06",
+    title: "Behaviour II",
+    type: "用于习惯养成和行为记录的移动端 PWA",
+    category: "应用与工具",
+    platforms: ["HTML", "PWA", "Cloudflare 后端"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: [],
+    description:
+      "帮助用户记录每天的行为和习惯，通过打卡累计进度，并逐步解锁成就。支持自定义成就、热力图和多种进度展示方式。",
+    highlight:
+      "在纯本地 PWA 的基础上加入了 Cloudflare 后端与云同步，解决数据只能留在单个浏览器或依赖 JSON 手动迁移的问题。这也是我从纯前端开发走向后端架构的第一次完整实践。",
+    status: "可体验",
+    statusTone: "available",
+    accent: "#54e0c7",
+    accentSecondary: "#a8ff6a",
+  }),
+  createProject({
+    order: 7,
+    slug: "project-07",
+    title: "TakeMyTime",
+    type: "原生 iOS 日程管理应用",
+    category: "应用与工具",
+    platforms: ["iOS", "SwiftUI"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: [],
+    description:
+      "在一屏内看清从早到晚的完整安排。支持工作日与周末日程预设、待办暂存、时间冲突预警，以及上午、下午或全天等模糊时间安排。",
+    highlight:
+      "这是一次完整的原生 iOS 产品开发实践，不只是把网页装进手机。应用包含原生交互和桌面小组件，让当天日程不打开 App 也能随时查看。",
+    status: "可体验",
+    statusTone: "available",
+    accent: "#49bfff",
+    accentSecondary: "#9a5cff",
+  }),
+  createProject({
+    order: 8,
+    slug: "project-08",
+    title: "PEKING Mahjong",
+    type: "纪念碑谷风格的北京麻将单机游戏",
+    category: "游戏与互动",
+    platforms: ["iOS", "SwiftUI", "微信原生小程序"],
+    coreTool: "Codex / GPT-5.5",
+    auxiliaryTools: [],
+    description:
+      "用空间感较强的视觉风格重新呈现北京麻将，支持完整的经典规则及“混儿”玩法，并同时开发 iOS 与微信小程序版本。",
+    highlight:
+      "同一套游戏规则和交互逻辑被适配到 iOS 与微信小程序两个平台。目前微信版本受限于公众平台审核，下一步计划尝试登陆抖音小游戏。",
+    status: "可体验",
+    statusTone: "available",
+    accent: "#ffcc4d",
+    accentSecondary: "#ff5f78",
+  }),
+  createProject({
+    order: 9,
+    slug: "project-09",
+    title: "JOYRIDE Mountain Road",
+    type: "Pop Art 与美式漫画风格的 AI 动画短片",
+    category: "视频与动画",
+    platforms: ["抖音", "竖屏视频"],
+    coreTool: "GPT-5.5 / Seedance 2.0",
+    auxiliaryTools: ["GPT Image 2"],
+    description:
+      "从一个跑山场景和零散画面灵感出发，完成一支具有强烈流行艺术与美漫风格的动画短片。",
+    highlight:
+      "我只提供核心灵感、画风、节奏和几个关键画面，其余内容由 AI 工作流逐步补全。GPT-5.5 负责分镜脚本与提示词，GPT Image 2 负责角色设定、故事板和风格参考，Seedance 2.0 完成最终动态画面。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#ff6ee7",
+    accentSecondary: "#795cff",
+  }),
+  createProject({
+    order: 10,
+    slug: "project-10",
+    title: "AIGC 视频制作十步法",
+    type: "从导演思维出发的 AIGC 视频工作流教程",
+    category: "视频与动画",
+    platforms: ["哔哩哔哩", "微信视频号"],
+    coreTool: "GPT-5.5 / GPT Image 2",
+    auxiliaryTools: ["Grok Imagine Video 1.5", "MiniMax Speech 2.8"],
+    description:
+      "把《JOYRIDE Mountain Road》的制作经验整理为一套十步工作法，从创意、脚本和分镜开始，解释如何逐步完成一支 AIGC 视频。",
+    highlight:
+      "它不是单纯记录操作步骤，而是把真实项目中积累的经验转化成可复用的方法。GPT-5.5 先整理制作过程并改写口播稿，MiniMax Speech 2.8 生成旁白，GPT Image 2 制作关键帧，再由 Grok Imagine Video 1.5 完成动画。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#f3de5b",
+    accentSecondary: "#ff6a3d",
+  }),
+  createProject({
+    order: 11,
+    slug: "project-11",
+    title: "Emeya POV",
+    type: "超写实风格的 AI 跑山纪实短片",
+    category: "视频与动画",
+    platforms: ["抖音", "竖屏视频"],
+    coreTool: "GPT-5.5 / GPT Image 2 / Gemini Omni Flash",
+    auxiliaryTools: [],
+    description:
+      "模拟真实跑山记录，以第一人称或贴近实拍的镜头语言，制作一支具有纪实质感的超写实汽车短片。",
+    highlight:
+      "这个项目主要用于测试 Gemini Omni Flash 在首尾帧视频生成和视频编辑方面的能力。GPT-5.5 负责分镜与提示词，GPT Image 2 生成关键画面，再由 Gemini Omni Flash 完成动态生成与视频调整。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#ff8f66",
+    accentSecondary: "#ff3d91",
+  }),
+  createProject({
+    order: 12,
+    slug: "project-12",
+    title: "自媒体运营",
+    type: "面向自媒体运营的多模态内容生产工作流",
+    category: "内容与工作流",
+    platforms: ["抖音", "小红书", "微信视频号·贴图"],
+    coreTool: "GPT-5.6 / MiniMax Speech 2.8 / Nano Banana Pro",
+    auxiliaryTools: ["Z-Image", "Codex", "HyperFrames"],
+    description:
+      "在选题、拍摄脚本、文案、配音、图片、漫画和视频等环节中引入 AI，根据内容类型组合不同工具，缩短从想法到发布的制作时间。",
+    highlight:
+      "它不追求让 AI 包办整条生产线，而是判断每个环节最适合由人还是 AI 完成。有时是一套完整工作流，有时只是让 AI 在脚本、配音或视觉制作中打一次精准的下手。具体案例将在该项目的内容确认阶段补充。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#9cff6a",
+    accentSecondary: "#1ecab8",
+  }),
+  createProject({
+    order: 13,
+    slug: "project-13",
+    title: "AI News",
+    type: "每日 AI 情报收集与整理系统",
+    category: "自动化",
+    platforms: ["macOS", "本地自动化"],
+    coreTool: "Codex / GPT-5.6",
+    auxiliaryTools: [],
+    description:
+      "每天自动收集 AI 模型、产品和内容工作流相关情报，并对信息进行整理、归类和归档。",
+    highlight:
+      "系统会同时输出人读版和机读版。人读版经过格式化编排，适合快速浏览；机读版更加精炼，用于建立长期数据库、重复内容检测以及后续模型处理。项目开发已完成，系统目前持续运行。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#49bfff",
+    accentSecondary: "#9a5cff",
+  }),
+];
 
 export function getProject(slug: string) {
   return projects.find((project) => project.slug === slug);

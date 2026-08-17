@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element -- Native navigation and static asset paths keep this static portfolio reliable. */
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
   getAdjacentProjects,
@@ -22,10 +23,36 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
+  const requestHeaders = await headers();
+  const host =
+    requestHeaders.get("x-forwarded-host") ??
+    requestHeaders.get("host") ??
+    "localhost:3000";
+  const protocol =
+    requestHeaders.get("x-forwarded-proto") ??
+    (host.startsWith("localhost") ? "http" : "https");
+  const origin = `${protocol}://${host}`;
+  const coverImage = project.coverImage
+    ? new URL(project.coverImage, origin).toString()
+    : undefined;
 
   return {
     title: project.title,
     description: project.description,
+    openGraph: {
+      type: "article",
+      title: project.title,
+      description: project.description,
+      images: coverImage
+        ? [{ url: coverImage, alt: project.coverAlt ?? project.title }]
+        : [],
+    },
+    twitter: {
+      card: coverImage ? "summary_large_image" : "summary",
+      title: project.title,
+      description: project.description,
+      images: coverImage ? [coverImage] : [],
+    },
   };
 }
 
@@ -43,16 +70,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <main className="detail-page" style={themeStyle}>
       <header className="detail-header">
-        <Link className="wordmark wordmark-link" href="/#works">
+        <a className="wordmark wordmark-link" href="/#works">
           <span>AIGC</span>
           <span>WORKS</span>
-        </Link>
+        </a>
         <div className="detail-header-center">
-          {String(project.order).padStart(2, "0")} / 12
+          {String(project.order).padStart(2, "0")} / {projects.length}
         </div>
-        <Link className="back-link" href="/#works">
+        <a className="back-link" href="/#works">
           ← BACK TO INDEX
-        </Link>
+        </a>
       </header>
 
       <section className="detail-hero">
@@ -86,20 +113,28 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
 
         <div
-          className="detail-cover"
+          className={`detail-cover${project.coverImage ? " has-cover" : ""}`}
           style={
             {
               viewTransitionName: `project-${project.slug}`,
             } as CSSProperties
           }
         >
+          {project.coverImage && (
+            <img
+              className="detail-cover-image"
+              src={project.coverImage}
+              alt={project.coverAlt ?? `${project.title} 封面`}
+              fetchPriority="high"
+            />
+          )}
           <div className="cover-grid" />
           <div className="cover-orbit cover-orbit-a" />
           <div className="cover-orbit cover-orbit-b" />
           <div className="detail-cover-number">
             {String(project.order).padStart(2, "0")}
           </div>
-          <span>16:9 PROJECT COVER PLACEHOLDER</span>
+          <span>{project.coverImage ? "PROJECT COVER" : "16:9 PROJECT COVER PLACEHOLDER"}</span>
         </div>
       </section>
 
@@ -110,6 +145,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
         <div className="introduction-copy">
           <p>{project.description}</p>
+          <div className="project-highlight">
+            <small>WHY IT STANDS OUT</small>
+            <p>{project.highlight}</p>
+          </div>
           <div className="detail-facts">
             <div>
               <small>PROJECT TYPE</small>
@@ -145,10 +184,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               }`}
               key={media.id}
             >
-              <div className="media-placeholder">
-                <span>{media.kind === "video" ? "▶" : "+"}</span>
-                <strong>{media.orientation === "landscape" ? "16:9" : "9:16"}</strong>
-              </div>
+              {media.src ? (
+                <img
+                  className="media-image"
+                  src={media.src}
+                  alt={media.alt ?? media.label}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  style={{
+                    aspectRatio:
+                      media.aspectRatio ??
+                      (media.orientation === "landscape" ? "16 / 9" : "9 / 16"),
+                  }}
+                />
+              ) : (
+                <div className="media-placeholder">
+                  <span>{media.kind === "video" ? "▶" : "+"}</span>
+                  <strong>{media.orientation === "landscape" ? "16:9" : "9:16"}</strong>
+                </div>
+              )}
               <figcaption>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <span>{media.label}</span>
@@ -169,7 +223,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <p>网址和文件都由项目数据配置；没有内容时不会生成虚假跳转。</p>
         </div>
 
-        <div className="resource-grid">
+        <div
+          className={`resource-grid${
+            project.files.length === 0 ? " resource-grid-links-only" : ""
+          }`}
+        >
           <div className="resource-column">
             <span className="resource-column-title">EXTERNAL LINKS</span>
             {project.links.map((link) =>
@@ -187,44 +245,46 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             )}
           </div>
 
-          <div className="resource-column">
-            <span className="resource-column-title">SOURCE FILES</span>
-            {project.files.map((file) =>
-              file.url ? (
-                <a key={file.fileName} href={file.url} download>
-                  <span>
-                    {file.label}
-                    <small>{file.fileName}</small>
-                  </span>
-                  <small>{file.fileSize} ↓</small>
-                </a>
-              ) : (
-                <div className="file-drop-placeholder" key={file.fileName}>
-                  <span className="file-plus">+</span>
-                  <span>
-                    <strong>{file.label}</strong>
-                    <small>待放入项目资源目录并填写文件地址</small>
-                  </span>
-                  <small>{file.fileSize}</small>
-                </div>
-              ),
-            )}
-          </div>
+          {project.files.length > 0 && (
+            <div className="resource-column">
+              <span className="resource-column-title">SOURCE FILES</span>
+              {project.files.map((file) =>
+                file.url ? (
+                  <a key={file.fileName} href={file.url} download>
+                    <span>
+                      {file.label}
+                      <small>{file.fileName}</small>
+                    </span>
+                    <small>{file.fileSize} ↓</small>
+                  </a>
+                ) : (
+                  <div className="file-drop-placeholder" key={file.fileName}>
+                    <span className="file-plus">+</span>
+                    <span>
+                      <strong>{file.label}</strong>
+                      <small>待放入项目资源目录并填写文件地址</small>
+                    </span>
+                    <small>{file.fileSize}</small>
+                  </div>
+                ),
+              )}
+            </div>
+          )}
         </div>
       </section>
 
       <nav className="next-projects" aria-label="项目间导航">
         {previous && (
-          <Link href={`/projects/${previous.slug}`}>
+          <a href={`/projects/${previous.slug}`}>
             <small>PREVIOUS</small>
             <span>← {previous.title}</span>
-          </Link>
+          </a>
         )}
         {next && (
-          <Link href={`/projects/${next.slug}`}>
+          <a href={`/projects/${next.slug}`}>
             <small>NEXT</small>
             <span>{next.title} →</span>
-          </Link>
+          </a>
         )}
       </nav>
     </main>

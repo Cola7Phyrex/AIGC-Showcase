@@ -13,7 +13,7 @@ const vertexShaderSource = `
 `;
 
 const fragmentShaderSource = `
-  precision highp float;
+  precision mediump float;
 
   uniform sampler2D u_texture;
   uniform vec2 u_mouse;
@@ -139,20 +139,6 @@ function drawIntroTexture(canvas: HTMLCanvasElement) {
     context.stroke();
   }
 
-  context.save();
-  context.translate(width * 0.5, height * 0.5);
-  context.beginPath();
-  context.moveTo(0, -height * 0.43);
-  context.lineTo(width * 0.24, height * 0.36);
-  context.lineTo(-width * 0.24, height * 0.36);
-  context.closePath();
-  context.fillStyle = "rgba(94, 50, 255, 0.2)";
-  context.fill();
-  context.lineWidth = Math.max(2, width / 700);
-  context.strokeStyle = "rgba(168, 142, 255, 0.65)";
-  context.stroke();
-  context.restore();
-
   let fontSize = Math.round(Math.min(height * 0.4, width * 0.205));
   context.textAlign = "center";
   context.textBaseline = "middle";
@@ -166,6 +152,258 @@ function drawIntroTexture(canvas: HTMLCanvasElement) {
   context.shadowBlur = Math.max(3, width / 420);
   context.fillText("Phyrex", width * 0.5, height * 0.515);
   context.shadowBlur = 0;
+
+  const subtitleSize = Math.max(11, Math.min(18, Math.round(fontSize * 0.07)));
+  context.font = `700 ${subtitleSize}px Inter, Arial, sans-serif`;
+  context.fillStyle = "rgba(255, 255, 255, 0.76)";
+  context.fillText("A I G C   S T U D I O", width * 0.5, height * 0.785);
+
+  const phiCenterX = width * 0.5;
+  const phiCenterY = height * 0.49;
+  const phiOuterRadiusX = width * 0.155;
+  const phiOuterRadiusY = height * 0.355;
+  const phiBandWidth = Math.max(18, Math.min(width * 0.047, height * 0.105));
+  const phiInnerRadiusX = phiOuterRadiusX - phiBandWidth;
+  const phiInnerRadiusY = phiOuterRadiusY - phiBandWidth;
+  const phiStemWidth = phiBandWidth * 0.84;
+  const phiTop = phiCenterY - phiOuterRadiusY - height * 0.085;
+  const phiBottom = phiCenterY + phiOuterRadiusY + height * 0.085;
+  const depthX = Math.max(6, width * 0.006);
+  const depthY = Math.max(8, height * 0.012);
+  const ringSegments = [
+    { start: Math.PI * 0.52, end: Math.PI * 1.4 },
+    { start: Math.PI * 1.5, end: Math.PI * 2.42 },
+  ];
+
+  const ellipsePoint = (
+    radiusX: number,
+    radiusY: number,
+    angle: number,
+    offsetX = 0,
+    offsetY = 0,
+  ) => ({
+    x: phiCenterX + Math.cos(angle) * radiusX + offsetX,
+    y: phiCenterY + Math.sin(angle) * radiusY + offsetY,
+  });
+
+  const traceRingSegment = (
+    start: number,
+    end: number,
+    offsetX = 0,
+    offsetY = 0,
+  ) => {
+    context.beginPath();
+    context.ellipse(
+      phiCenterX + offsetX,
+      phiCenterY + offsetY,
+      phiOuterRadiusX,
+      phiOuterRadiusY,
+      0,
+      start,
+      end,
+    );
+    context.ellipse(
+      phiCenterX + offsetX,
+      phiCenterY + offsetY,
+      phiInnerRadiusX,
+      phiInnerRadiusY,
+      0,
+      end,
+      start,
+      true,
+    );
+    context.closePath();
+  };
+
+  const traceCurvedSide = (
+    radiusX: number,
+    radiusY: number,
+    start: number,
+    end: number,
+    reverse = false,
+  ) => {
+    context.beginPath();
+    context.ellipse(
+      phiCenterX,
+      phiCenterY,
+      radiusX,
+      radiusY,
+      0,
+      reverse ? end : start,
+      reverse ? start : end,
+      reverse,
+    );
+    const backEnd = ellipsePoint(
+      radiusX,
+      radiusY,
+      reverse ? start : end,
+      depthX,
+      depthY,
+    );
+    context.lineTo(backEnd.x, backEnd.y);
+    context.ellipse(
+      phiCenterX + depthX,
+      phiCenterY + depthY,
+      radiusX,
+      radiusY,
+      0,
+      reverse ? start : end,
+      reverse ? end : start,
+      !reverse,
+    );
+    context.closePath();
+  };
+
+  const drawQuad = (
+    points: Array<{ x: number; y: number }>,
+    fill: string,
+    stroke: string,
+  ) => {
+    context.beginPath();
+    context.moveTo(points[0].x, points[0].y);
+    points.slice(1).forEach((point) => context.lineTo(point.x, point.y));
+    context.closePath();
+    context.fillStyle = fill;
+    context.fill();
+    context.strokeStyle = stroke;
+    context.stroke();
+  };
+
+  context.save();
+  context.lineCap = "butt";
+  context.lineJoin = "miter";
+  context.lineWidth = Math.max(1.2, width / 1050);
+
+  ringSegments.forEach(({ start, end }) => {
+    traceRingSegment(start, end, depthX, depthY);
+    context.fillStyle = "rgba(35, 22, 82, 0.035)";
+    context.fill();
+    context.strokeStyle = "rgba(51, 189, 255, 0.42)";
+    context.stroke();
+
+    traceCurvedSide(phiOuterRadiusX, phiOuterRadiusY, start, end);
+    context.fillStyle = "rgba(72, 110, 160, 0.045)";
+    context.fill();
+    context.strokeStyle = "rgba(52, 207, 255, 0.36)";
+    context.stroke();
+
+    traceCurvedSide(phiInnerRadiusX, phiInnerRadiusY, start, end, true);
+    context.fillStyle = "rgba(24, 14, 70, 0.055)";
+    context.fill();
+    context.strokeStyle = "rgba(151, 224, 255, 0.3)";
+    context.stroke();
+
+    [start, end].forEach((angle) => {
+      const outerFront = ellipsePoint(phiOuterRadiusX, phiOuterRadiusY, angle);
+      const innerFront = ellipsePoint(phiInnerRadiusX, phiInnerRadiusY, angle);
+      const innerBack = ellipsePoint(
+        phiInnerRadiusX,
+        phiInnerRadiusY,
+        angle,
+        depthX,
+        depthY,
+      );
+      const outerBack = ellipsePoint(
+        phiOuterRadiusX,
+        phiOuterRadiusY,
+        angle,
+        depthX,
+        depthY,
+      );
+      drawQuad(
+        [outerFront, innerFront, innerBack, outerBack],
+        "rgba(169, 230, 255, 0.07)",
+        "rgba(200, 244, 255, 0.56)",
+      );
+    });
+  });
+
+  const phiFront = context.createLinearGradient(
+    phiCenterX - phiOuterRadiusX,
+    phiTop,
+    phiCenterX + phiOuterRadiusX,
+    phiBottom,
+  );
+  phiFront.addColorStop(0, "rgba(115, 74, 218, 0.055)");
+  phiFront.addColorStop(0.4, "rgba(218, 235, 255, 0.105)");
+  phiFront.addColorStop(0.62, "rgba(61, 216, 255, 0.075)");
+  phiFront.addColorStop(1, "rgba(46, 25, 111, 0.045)");
+
+  ringSegments.forEach(({ start, end }) => {
+    traceRingSegment(start, end);
+    context.fillStyle = phiFront;
+    context.fill();
+    context.strokeStyle = "rgba(49, 220, 255, 0.78)";
+    context.lineWidth = Math.max(1.5, width / 900);
+    context.stroke();
+  });
+
+  const phiStem = context.createLinearGradient(
+    phiCenterX - phiStemWidth * 0.5,
+    0,
+    phiCenterX + phiStemWidth * 0.5,
+    0,
+  );
+  phiStem.addColorStop(0, "rgba(75, 54, 152, 0.045)");
+  phiStem.addColorStop(0.45, "rgba(225, 243, 255, 0.11)");
+  phiStem.addColorStop(0.72, "rgba(52, 220, 255, 0.065)");
+  phiStem.addColorStop(1, "rgba(40, 24, 100, 0.04)");
+
+  const stemLeft = phiCenterX - phiStemWidth * 0.5;
+  const stemRight = phiCenterX + phiStemWidth * 0.5;
+  const stemFront = [
+    { x: stemLeft, y: phiTop },
+    { x: stemRight, y: phiTop },
+    { x: stemRight, y: phiBottom },
+    { x: stemLeft, y: phiBottom },
+  ];
+  const stemBack = stemFront.map((point) => ({
+    x: point.x + depthX,
+    y: point.y + depthY,
+  }));
+
+  drawQuad(
+    stemBack,
+    "rgba(25, 14, 67, 0.035)",
+    "rgba(54, 205, 255, 0.4)",
+  );
+  for (let side = 0; side < 4; side += 1) {
+    const next = (side + 1) % 4;
+    drawQuad(
+      [stemFront[side], stemFront[next], stemBack[next], stemBack[side]],
+      "rgba(115, 198, 230, 0.045)",
+      "rgba(139, 232, 255, 0.5)",
+    );
+  }
+  drawQuad(
+    stemFront,
+    "rgba(225, 243, 255, 0.07)",
+    "rgba(47, 220, 255, 0.84)",
+  );
+  context.fillStyle = phiStem;
+  context.fillRect(stemLeft, phiTop, phiStemWidth, phiBottom - phiTop);
+
+  context.globalCompositeOperation = "screen";
+  context.lineWidth = Math.max(1, width / 1500);
+  context.strokeStyle = "rgba(244, 251, 255, 0.88)";
+  ringSegments.forEach(({ start, end }) => {
+    context.beginPath();
+    context.ellipse(
+      phiCenterX,
+      phiCenterY,
+      phiOuterRadiusX,
+      phiOuterRadiusY,
+      0,
+      start,
+      end,
+    );
+    context.stroke();
+  });
+  context.beginPath();
+  context.moveTo(stemLeft, phiTop);
+  context.lineTo(stemLeft, phiBottom);
+  context.stroke();
+  context.restore();
 }
 
 export function FluidIntro() {
@@ -228,13 +466,18 @@ export function FluidIntro() {
     const pointer = { x: 0.5, y: 0.5 };
     let force = 0.38;
     let animationFrame = 0;
+    let lastDraw = 0;
+    let lastInteraction = performance.now();
+    let isVisible = true;
+    let isDocumentVisible = !document.hidden;
     let previousPointer = { x: 0.5, y: 0.5 };
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
     const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const quality = window.innerWidth <= 720 ? 0.8 : 1;
+      const ratio = Math.min(window.devicePixelRatio || 1, quality);
       const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
       const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
       if (canvas.width !== width || canvas.height !== height) {
@@ -268,6 +511,7 @@ export function FluidIntro() {
       );
       force = Math.min(1, force + movement * 5.5);
       previousPointer = { x: target.x, y: target.y };
+      lastInteraction = performance.now();
     };
 
     const onPointerLeave = () => {
@@ -277,6 +521,16 @@ export function FluidIntro() {
 
     const start = performance.now();
     const render = (now: number) => {
+      animationFrame = 0;
+      const active = now - lastInteraction < 720;
+      const frameInterval = active ? 1000 / 60 : 1000 / 30;
+      if (now - lastDraw < frameInterval) {
+        if (isVisible && isDocumentVisible && !reducedMotion) {
+          animationFrame = requestAnimationFrame(render);
+        }
+        return;
+      }
+      lastDraw = now;
       pointer.x += (target.x - pointer.x) * 0.075;
       pointer.y += (target.y - pointer.y) * 0.075;
       force += ((reducedMotion ? 0.12 : 0.28) - force) * 0.025;
@@ -284,13 +538,48 @@ export function FluidIntro() {
       gl.uniform2f(mouseLocation, pointer.x, pointer.y);
       gl.uniform1f(forceLocation, force);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      if (!reducedMotion) animationFrame = requestAnimationFrame(render);
+      if (isVisible && isDocumentVisible && !reducedMotion) {
+        animationFrame = requestAnimationFrame(render);
+      }
+    };
+
+    const scheduleRender = () => {
+      if (!animationFrame && isVisible && isDocumentVisible && !reducedMotion) {
+        animationFrame = requestAnimationFrame(render);
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          lastDraw = 0;
+          scheduleRender();
+        } else {
+          cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+        }
+      },
+      { threshold: 0.01 },
+    );
+
+    const onVisibilityChange = () => {
+      isDocumentVisible = !document.hidden;
+      if (isDocumentVisible) {
+        lastDraw = 0;
+        scheduleRender();
+      } else {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
     };
 
     resize();
     canvas.addEventListener("pointermove", onPointerMove);
     canvas.addEventListener("pointerleave", onPointerLeave);
     window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    observer.observe(canvas);
     setReady(true);
     render(performance.now());
 
@@ -299,6 +588,8 @@ export function FluidIntro() {
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      observer.disconnect();
       gl.deleteTexture(texture);
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(program);
@@ -315,6 +606,9 @@ export function FluidIntro() {
         <h1 className={ready ? "intro-title is-rendered" : "intro-title"}>
           Phyrex
         </h1>
+        <p className={ready ? "intro-subtitle is-rendered" : "intro-subtitle"}>
+          AIGC STUDIO
+        </p>
 
         <div className="intro-topline">
           <span>PHYREX®</span>

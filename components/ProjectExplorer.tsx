@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element -- Project covers are static local assets, rendered directly for the gallery transition. */
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   type CSSProperties,
   useEffect,
@@ -20,15 +20,18 @@ const mix = (start: number, end: number, amount: number) =>
   start + (end - start) * amount;
 
 export function ProjectExplorer({ projects }: { projects: Project[] }) {
-  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [category, setCategory] = useState("全部");
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [transitionProgress, setTransitionProgress] = useState(0);
+  const [isAutoExpanding, setIsAutoExpanding] = useState(false);
+  const [autoExpansionDuration, setAutoExpansionDuration] = useState(850);
   const [viewport, setViewport] = useState({ width: 1440, height: 900 });
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const worksRef = useRef<HTMLElement>(null);
   const navigationLocked = useRef(false);
+  const expansionAnimation = useRef(0);
+  const navigationTimer = useRef(0);
 
   const categories = useMemo(
     () => ["全部", ...Array.from(new Set(projects.map((item) => item.category)))],
@@ -46,23 +49,37 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
   const activeProject = visibleProjects[activeIndex] ?? visibleProjects[0];
 
   const go = (direction: number) => {
+    if (transitionProgress > 0.02 || isAutoExpanding) return;
     setActiveIndex((current) => {
       const total = visibleProjects.length;
       return (current + direction + total) % total;
     });
   };
 
+  const enterProject = () => {
+    if (navigationLocked.current) return;
+    navigationLocked.current = true;
+    window.location.assign(`/projects/${activeProject.slug}`);
+  };
+
   const openProject = () => {
+    if (isAutoExpanding || navigationLocked.current) return;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const element = worksRef.current;
-    if (!element) return;
-    const sectionTop = window.scrollY + element.getBoundingClientRect().top;
-    const target = sectionTop + element.offsetHeight - window.innerHeight;
-    window.scrollTo({
-      top: target,
-      behavior: reducedMotion ? "auto" : "smooth",
+    if (reducedMotion) {
+      enterProject();
+      return;
+    }
+
+    const duration = Math.max(180, 850 * (1 - transitionProgress));
+    setAutoExpansionDuration(duration);
+    setIsAutoExpanding(true);
+    cancelAnimationFrame(expansionAnimation.current);
+    window.clearTimeout(navigationTimer.current);
+    expansionAnimation.current = requestAnimationFrame(() => {
+      setTransitionProgress(1);
+      navigationTimer.current = window.setTimeout(enterProject, duration);
     });
   };
 
@@ -101,6 +118,11 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     };
   }, []);
 
+  useEffect(() => () => {
+    cancelAnimationFrame(expansionAnimation.current);
+    window.clearTimeout(navigationTimer.current);
+  }, []);
+
   useEffect(() => {
     if (window.location.hash !== "#works") return;
 
@@ -112,6 +134,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     const landingFrame = requestAnimationFrame(() => {
       worksRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
       setTransitionProgress(0);
+      setIsAutoExpanding(false);
       unlockFrame = requestAnimationFrame(() => {
         navigationLocked.current = false;
       });
@@ -124,42 +147,11 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     };
   }, []);
 
-  useEffect(() => {
-    let frame = 0;
-    const updateTransition = () => {
-      const element = worksRef.current;
-      if (!element) return;
-      const rect = element.getBoundingClientRect();
-      const travel = Math.max(1, element.offsetHeight - window.innerHeight);
-      const progress = clamp(-rect.top / travel);
-      setTransitionProgress(progress);
-
-      if (
-        progress >= 0.985 &&
-        !navigationLocked.current &&
-        !overlay
-      ) {
-        navigationLocked.current = true;
-        router.push(`/projects/${activeProject.slug}`);
-      }
-    };
-
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(updateTransition);
-    };
-
-    frame = requestAnimationFrame(updateTransition);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [activeProject.slug, overlay, router]);
-
   const selectProject = (project: Project) => {
     setCategory("全部");
     setActiveIndex(project.order - 1);
+    setTransitionProgress(0);
+    setIsAutoExpanding(false);
     navigationLocked.current = false;
     setOverlay(null);
   };
@@ -171,24 +163,20 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
     ? viewport.width - 36
     : Math.min(viewport.width * (tablet ? 0.76 : 0.58), 980);
   const startHeight = startWidth * (9 / 16);
-  const cardWidth = mix(startWidth, viewport.width, easedProgress);
-  const cardHeight = mix(startHeight, viewport.height, easedProgress);
-  const cardLeft = mix(
-    viewport.width * (mobile ? 0.5 : tablet ? 0.57 : 0.68),
-    viewport.width * 0.5,
-    easedProgress,
-  );
-  const cardTop = mix(
-    viewport.height * (mobile ? 0.4 : tablet ? 0.42 : 0.5),
-    viewport.height * 0.5,
-    easedProgress,
-  );
+  const startLeft = viewport.width * (mobile ? 0.5 : tablet ? 0.57 : 0.68);
+  const startTop = viewport.height * (mobile ? 0.4 : tablet ? 0.42 : 0.5);
+  const translateX = (viewport.width * 0.5 - startLeft) * easedProgress;
+  const translateY = (viewport.height * 0.5 - startTop) * easedProgress;
+  const scaleX = mix(1, viewport.width / startWidth, easedProgress);
+  const scaleY = mix(1, viewport.height / startHeight, easedProgress);
   const cardsSpaceStyle = {
     "--transition-progress": transitionProgress,
-    width: `${cardWidth}px`,
-    height: `${cardHeight}px`,
-    left: `${cardLeft}px`,
-    top: `${cardTop}px`,
+    "--expansion-duration": `${autoExpansionDuration}ms`,
+    width: `${startWidth}px`,
+    height: `${startHeight}px`,
+    left: `${startLeft}px`,
+    top: `${startTop}px`,
+    transform: `translate3d(calc(-50% + ${translateX}px), calc(-50% + ${translateY}px), 0) scale3d(${scaleX}, ${scaleY}, 1)`,
   } as CSSProperties;
 
   const interfaceOpacity = clamp(1 - transitionProgress * 2.4);
@@ -209,8 +197,18 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
         aria-label="作品一览"
       >
         <section
-          className="project-stage"
+          className={`project-stage${isAutoExpanding ? " is-auto-expanding" : ""}`}
           aria-label="项目空间画廊"
+          onWheel={(event) => {
+            if (overlay) return;
+            const delta = event.deltaY;
+            if (delta > 0 || transitionProgress > 0) {
+              event.preventDefault();
+              const next = clamp(transitionProgress + delta / 900);
+              setTransitionProgress(next);
+              if (next >= 0.985) enterProject();
+            }
+          }}
           onTouchStart={(event) => {
             touchStart.current = {
               x: event.touches[0].clientX,
@@ -224,6 +222,12 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
             const deltaY = start.y - event.changedTouches[0].clientY;
             if (Math.abs(deltaX) > 44 && Math.abs(deltaX) > Math.abs(deltaY)) {
               go(deltaX > 0 ? 1 : -1);
+            } else if (Math.abs(deltaY) > 44) {
+              const next = clamp(
+                transitionProgress + (deltaY > 0 ? 0.24 : -0.24),
+              );
+              setTransitionProgress(next);
+              if (next >= 0.985) enterProject();
             }
             touchStart.current = null;
           }}
@@ -236,7 +240,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
 
             <div className="header-meta" aria-hidden="true">
               <span>SELECTED WORKS</span>
-              <span>12 PROJECTS</span>
+              <span>{projects.length} PROJECTS</span>
             </div>
 
             <nav className="header-actions" aria-label="作品浏览工具">
@@ -300,6 +304,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
 
           <div
             className="cards-space"
+            data-auto-expanding={isAutoExpanding ? "true" : "false"}
             style={cardsSpaceStyle}
             aria-label="项目封面"
           >
@@ -342,6 +347,14 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                   aria-hidden={!isVisible}
                 >
                   <div className="project-card-visual">
+                    {project.coverImage && (
+                      <img
+                        className="project-cover-image"
+                        src={project.coverImage}
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    )}
                     <div className="cover-grid" />
                     <div className="cover-orbit cover-orbit-a" />
                     <div className="cover-orbit cover-orbit-b" />
@@ -477,6 +490,8 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                   onClick={() => {
                     setCategory(item);
                     setActiveIndex(0);
+                    setTransitionProgress(0);
+                    setIsAutoExpanding(false);
                     navigationLocked.current = false;
                     setOverlay(null);
                   }}

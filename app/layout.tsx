@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     default: "AIGC Works",
     template: "%s — AIGC Works",
   },
-  description: "十二个 AIGC 项目的沉浸式作品展厅。",
+  description: "十三个 AIGC 项目的沉浸式作品展厅。",
 };
 
 export default function RootLayout({
