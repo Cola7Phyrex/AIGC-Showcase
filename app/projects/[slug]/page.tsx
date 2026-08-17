@@ -187,6 +187,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   : ""
               }${media.layout === "tile" ? " media-tile" : ""}${
                 media.layout === "contained" ? " media-contained" : ""
+              }${media.layout === "pair" ? " media-pair" : ""
               }`}
               key={media.id}
             >

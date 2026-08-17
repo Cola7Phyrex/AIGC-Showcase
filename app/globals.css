@@ -1270,6 +1270,10 @@ a:focus-visible {
   grid-column: span 4;
 }
 
+.media-pair {
+  grid-column: span 6;
+}
+
 .media-placeholder {
   position: relative;
   display: grid;
@@ -1720,6 +1724,10 @@ a:focus-visible {
 
   .media-tile {
     grid-column: span 4;
+  }
+
+  .media-pair {
+    grid-column: 1 / -1;
   }
 
   .resource-grid {

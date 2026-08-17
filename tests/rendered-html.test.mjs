@@ -85,3 +85,15 @@ test("server-renders the Lornveil DM Agent showcase media", async () => {
   assert.match(html, /\/projects\/project-02\/case02-3\.png/);
   assert.ok((html.match(/media-contained/g) ?? []).length >= 3);
 });
+
+test("server-renders the DND Arena showcase media and repository", async () => {
+  const response = await render("/projects/project-03");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /DND Arena/);
+  assert.match(html, /\/projects\/project-03\/cover03\.jpg/);
+  assert.match(html, /\/projects\/project-03\/case03-6\.jpg/);
+  assert.match(html, /https:\/\/github\.com\/Cola7Phyrex\/dnd-arena-playtest/);
+  assert.ok((html.match(/media-pair/g) ?? []).length >= 6);
+});

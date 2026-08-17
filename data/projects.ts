@@ -10,7 +10,7 @@ export type ProjectMedia = {
   src?: string;
   alt?: string;
   aspectRatio?: string;
-  layout?: "full" | "tile" | "contained";
+  layout?: "full" | "tile" | "contained" | "pair";
 };
 
 export type ProjectLink = {
@@ -256,6 +256,78 @@ export const projects: Project[] = [
     statusTone: "available",
     accent: "#21d4a5",
     accentSecondary: "#1b8dff",
+    coverImage: "/projects/project-03/cover03.jpg",
+    coverAlt: "DND Arena 王城喷泉对决封面",
+    media: [
+      {
+        id: "project-03-case-01",
+        kind: "image",
+        orientation: "portrait",
+        label: "角色构筑与对战配置",
+        src: "/projects/project-03/case03-1.jpg",
+        alt: "DND Arena 的角色构筑与对战配置界面",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+      {
+        id: "project-03-case-02",
+        kind: "image",
+        orientation: "portrait",
+        label: "角色构筑器",
+        src: "/projects/project-03/case03-2.jpg",
+        alt: "DND Arena 的多角色构筑界面",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+      {
+        id: "project-03-case-03",
+        kind: "image",
+        orientation: "portrait",
+        label: "地图编辑器",
+        src: "/projects/project-03/case03-3.jpg",
+        alt: "DND Arena 的战斗地图编辑器",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+      {
+        id: "project-03-case-04",
+        kind: "image",
+        orientation: "portrait",
+        label: "战斗过程与规则解释",
+        src: "/projects/project-03/case03-4.jpg",
+        alt: "DND Arena 的战斗过程与规则解释界面",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+      {
+        id: "project-03-case-05",
+        kind: "image",
+        orientation: "portrait",
+        label: "批量评测与内容包",
+        src: "/projects/project-03/case03-5.jpg",
+        alt: "DND Arena 的批量评测与内容包界面",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+      {
+        id: "project-03-case-06",
+        kind: "image",
+        orientation: "portrait",
+        label: "角色视觉概念图",
+        src: "/projects/project-03/case03-6.jpg",
+        alt: "DND Arena 的提夫林角色视觉概念图",
+        aspectRatio: "1800 / 2400",
+        layout: "pair",
+      },
+    ],
+    links: [
+      {
+        label: "GitHub 仓库",
+        kind: "repository",
+        url: "https://github.com/Cola7Phyrex/dnd-arena-playtest",
+      },
+    ],
+    files: [],
   }),
   createProject({
     order: 4,
