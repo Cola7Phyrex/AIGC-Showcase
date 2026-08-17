@@ -74,3 +74,13 @@ test("server-renders the confirmed video workflow names", async () => {
   assert.match(html, /Grok Imagine Video 1\.5/);
   assert.match(html, /MiniMax Speech 2\.8/);
 });
+
+test("server-renders the Lornveil DM Agent showcase media", async () => {
+  const response = await render("/projects/project-02");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Lornveil — DM Agent/);
+  assert.match(html, /\/projects\/project-02\/cover02\.jpg/);
+  assert.match(html, /\/projects\/project-02\/case02-3\.png/);
+});
