@@ -83,4 +83,5 @@ test("server-renders the Lornveil DM Agent showcase media", async () => {
   assert.match(html, /Lornveil — DM Agent/);
   assert.match(html, /\/projects\/project-02\/cover02\.jpg/);
   assert.match(html, /\/projects\/project-02\/case02-3\.png/);
+  assert.ok((html.match(/media-contained/g) ?? []).length >= 3);
 });

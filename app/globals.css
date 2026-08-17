@@ -1261,6 +1261,11 @@ a:focus-visible {
   grid-column: 1 / -1;
 }
 
+.media-contained {
+  width: min(560px, 100%);
+  justify-self: center;
+}
+
 .media-tile {
   grid-column: span 4;
 }

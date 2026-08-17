@@ -10,7 +10,7 @@ export type ProjectMedia = {
   src?: string;
   alt?: string;
   aspectRatio?: string;
-  layout?: "full" | "tile";
+  layout?: "full" | "tile" | "contained";
 };
 
 export type ProjectLink = {
@@ -215,7 +215,7 @@ export const projects: Project[] = [
         src: "/projects/project-02/case02-1.jpg",
         alt: "Lornveil DM Agent 发布海报",
         aspectRatio: "1024 / 1536",
-        layout: "full",
+        layout: "contained",
       },
       {
         id: "project-02-case-02",
@@ -225,7 +225,7 @@ export const projects: Project[] = [
         src: "/projects/project-02/case02-2.png",
         alt: "Lornveil DM Agent 在 OpenClaw 中的对话界面",
         aspectRatio: "900 / 1272",
-        layout: "full",
+        layout: "contained",
       },
       {
         id: "project-02-case-03",
@@ -235,7 +235,7 @@ export const projects: Project[] = [
         src: "/projects/project-02/case02-3.png",
         alt: "Lornveil DM Agent 的 SKILL.md 配置内容",
         aspectRatio: "900 / 1272",
-        layout: "full",
+        layout: "contained",
       },
     ],
   }),
