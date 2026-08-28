@@ -97,3 +97,16 @@ test("server-renders the DND Arena showcase media and repository", async () => {
   assert.match(html, /https:\/\/github\.com\/Cola7Phyrex\/dnd-arena-playtest/);
   assert.ok((html.match(/media-pair/g) ?? []).length >= 6);
 });
+
+test("server-renders the Crazy Tide showcase media and project link", async () => {
+  const response = await render("/projects/project-04");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Crazy Tide/);
+  assert.match(html, /\/projects\/project-04\/cover04\.jpg/);
+  assert.match(html, /\/projects\/project-04\/case04-11\.jpg/);
+  assert.match(html, /https:\/\/cola7phyrex\.github\.io\/Crazy_Tide\//);
+  assert.ok((html.match(/media-pair/g) ?? []).length >= 8);
+  assert.ok((html.match(/media-triplet/g) ?? []).length >= 3);
+});
