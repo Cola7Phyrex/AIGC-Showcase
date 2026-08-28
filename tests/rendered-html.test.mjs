@@ -123,3 +123,16 @@ test("server-renders the Yishu Neon showcase media and project link", async () =
   assert.match(html, /https:\/\/cola7phyrex\.github\.io\/yishu-neon\//);
   assert.ok((html.match(/media-quartet/g) ?? []).length >= 8);
 });
+
+test("server-renders the Behaviour II showcase media and download links", async () => {
+  const response = await render("/projects/project-06");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Behaviour II/);
+  assert.match(html, /\/projects\/project-06\/cover06\.jpg/);
+  assert.match(html, /\/projects\/project-06\/case06-8\.png/);
+  assert.match(html, /https:\/\/cola7phyrex\.github\.io\/Behavior-2\//);
+  assert.match(html, /https:\/\/pan\.quark\.cn\/s\/6a1e616c8be8\?pwd=5mGk/);
+  assert.ok((html.match(/media-quartet/g) ?? []).length >= 8);
+});
