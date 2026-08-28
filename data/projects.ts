@@ -322,6 +322,11 @@ export const projects: Project[] = [
     ],
     links: [
       {
+        label: "试玩链接",
+        kind: "website",
+        url: "https://cola7phyrex.github.io/dnd-arena-playtest/",
+      },
+      {
         label: "GitHub 仓库",
         kind: "repository",
         url: "https://github.com/Cola7Phyrex/dnd-arena-playtest",

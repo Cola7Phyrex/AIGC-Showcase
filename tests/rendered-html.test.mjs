@@ -94,6 +94,7 @@ test("server-renders the DND Arena showcase media and repository", async () => {
   assert.match(html, /DND Arena/);
   assert.match(html, /\/projects\/project-03\/cover03\.jpg/);
   assert.match(html, /\/projects\/project-03\/case03-6\.jpg/);
+  assert.match(html, /https:\/\/cola7phyrex\.github\.io\/dnd-arena-playtest\//);
   assert.match(html, /https:\/\/github\.com\/Cola7Phyrex\/dnd-arena-playtest/);
   assert.ok((html.match(/media-pair/g) ?? []).length >= 6);
 });
