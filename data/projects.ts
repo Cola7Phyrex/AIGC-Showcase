@@ -10,7 +10,7 @@ export type ProjectMedia = {
   src?: string;
   alt?: string;
   aspectRatio?: string;
-  layout?: "full" | "tile" | "contained" | "pair" | "triplet";
+  layout?: "full" | "tile" | "contained" | "pair" | "triplet" | "quartet";
 };
 
 export type ProjectLink = {
@@ -502,7 +502,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-1.png",
         alt: "Yishu Neon 移动端界面预览 01",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-02",
@@ -512,7 +512,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-2.png",
         alt: "Yishu Neon 移动端界面预览 02",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-03",
@@ -522,7 +522,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-3.png",
         alt: "Yishu Neon 移动端界面预览 03",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-04",
@@ -532,7 +532,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-4.png",
         alt: "Yishu Neon 移动端界面预览 04",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-05",
@@ -542,7 +542,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-5.png",
         alt: "Yishu Neon 移动端界面预览 05",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-06",
@@ -552,7 +552,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-6.png",
         alt: "Yishu Neon 移动端界面预览 06",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-07",
@@ -562,7 +562,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-7.png",
         alt: "Yishu Neon 移动端界面预览 07",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
       {
         id: "project-05-case-08",
@@ -572,7 +572,7 @@ export const projects: Project[] = [
         src: "/projects/project-05/case05-8.png",
         alt: "Yishu Neon 移动端界面预览 08",
         aspectRatio: "627 / 1280",
-        layout: "pair",
+        layout: "quartet",
       },
     ],
     links: [

@@ -1278,6 +1278,10 @@ a:focus-visible {
   grid-column: span 4;
 }
 
+.media-quartet {
+  grid-column: span 3;
+}
+
 .media-placeholder {
   position: relative;
   display: grid;
@@ -1736,6 +1740,10 @@ a:focus-visible {
 
   .media-triplet {
     grid-column: 1 / -1;
+  }
+
+  .media-quartet {
+    grid-column: span 6;
   }
 
   .resource-grid {

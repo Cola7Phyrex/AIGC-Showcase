@@ -121,5 +121,5 @@ test("server-renders the Yishu Neon showcase media and project link", async () =
   assert.match(html, /\/projects\/project-05\/cover05\.jpg/);
   assert.match(html, /\/projects\/project-05\/case05-8\.png/);
   assert.match(html, /https:\/\/cola7phyrex\.github\.io\/yishu-neon\//);
-  assert.ok((html.match(/media-pair/g) ?? []).length >= 8);
+  assert.ok((html.match(/media-quartet/g) ?? []).length >= 8);
 });
