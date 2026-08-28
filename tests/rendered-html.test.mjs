@@ -111,3 +111,15 @@ test("server-renders the Crazy Tide showcase media and project link", async () =
   assert.ok((html.match(/media-pair/g) ?? []).length >= 8);
   assert.ok((html.match(/media-triplet/g) ?? []).length >= 3);
 });
+
+test("server-renders the Yishu Neon showcase media and project link", async () => {
+  const response = await render("/projects/project-05");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Yishu Neon/);
+  assert.match(html, /\/projects\/project-05\/cover05\.jpg/);
+  assert.match(html, /\/projects\/project-05\/case05-8\.png/);
+  assert.match(html, /https:\/\/cola7phyrex\.github\.io\/yishu-neon\//);
+  assert.ok((html.match(/media-pair/g) ?? []).length >= 8);
+});
