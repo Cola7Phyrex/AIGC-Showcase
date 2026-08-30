@@ -799,7 +799,7 @@ export const projects: Project[] = [
     coreTool: "Codex / GPT-5.5",
     auxiliaryTools: [],
     description:
-      "用空间感较强的视觉风格重新呈现北京麻将，支持完整的经典规则及“混儿”玩法，并同时开发 iOS 与微信小程序版本。",
+      "最didididao 地地道道的推倒胡北京麻将，支持完整的经典规则及“混儿”玩法，并同时开发 iOS 与微信小程序版本。",
     highlight:
       "同一套游戏规则和交互逻辑被适配到 iOS 与微信小程序两个平台。目前微信版本受限于公众平台审核，下一步计划尝试登陆抖音小游戏。",
     status: "可体验",
@@ -868,6 +868,13 @@ export const projects: Project[] = [
         alt: "PEKING Mahjong 游戏界面预览 06",
         aspectRatio: "3360 / 2034",
         layout: "full",
+      },
+    ],
+    links: [
+      {
+        label: "App 下载",
+        kind: "website",
+        url: "https://pan.quark.cn/s/52ef9c4dc4b4?pwd=H6fV",
       },
     ],
   }),
