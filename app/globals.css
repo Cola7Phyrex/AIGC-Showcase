@@ -828,34 +828,6 @@ a:focus-visible {
   }
 }
 
-.expansion-card-title {
-  position: absolute;
-  z-index: 6;
-  left: clamp(20px, 4vw, 70px);
-  bottom: clamp(24px, 6vh, 76px);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 80%;
-  opacity: var(--transition-progress);
-  transition: opacity 360ms ease 220ms;
-}
-
-.expansion-card-title span {
-  color: rgba(255, 255, 255, 0.66);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.expansion-card-title strong {
-  color: white;
-  font-size: clamp(44px, 8vw, 140px);
-  letter-spacing: -0.075em;
-  line-height: 0.86;
-}
-
 .expansion-progress {
   position: absolute;
   z-index: 10;

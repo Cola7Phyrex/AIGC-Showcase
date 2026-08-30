@@ -365,15 +365,6 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                       <span>PROJECT</span>
                       <strong>{project.category}</strong>
                     </div>
-                    {isActive && (
-                      <div
-                        className="expansion-card-title"
-                        style={{ opacity: clamp((transitionProgress - 0.45) * 2) }}
-                      >
-                        <span>{project.category}</span>
-                        <strong>{project.title}</strong>
-                      </div>
-                    )}
                   </div>
 
                   <button
