@@ -158,10 +158,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <small>STATUS</small>
               <strong>{project.status}</strong>
             </div>
-            <div>
-              <small>UPDATED</small>
-              <strong>2026 / PLACEHOLDER</strong>
-            </div>
           </div>
         </div>
       </section>
@@ -172,8 +168,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <span>MEDIA</span>
         </div>
         <div className="section-heading-row">
-          <h2>图片 / 视频预览</h2>
-          <p>横版与竖版素材可以混排；替换占位素材后无需修改页面结构。</p>
+          <h2>预览</h2>
         </div>
 
         <div className="media-grid">
@@ -229,30 +224,33 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
         <div className="section-heading-row">
           <h2>内容链接 / 源文件</h2>
-          <p>网址和文件都由项目数据配置；没有内容时不会生成虚假跳转。</p>
         </div>
 
         <div
           className={`resource-grid${
-            project.files.length === 0 ? " resource-grid-links-only" : ""
+            project.files.length === 0 || project.links.length === 0
+              ? " resource-grid-single-column"
+              : ""
           }`}
         >
-          <div className="resource-column">
-            <span className="resource-column-title">EXTERNAL LINKS</span>
-            {project.links.map((link) =>
-              link.url ? (
-                <a key={link.label} href={link.url} target="_blank" rel="noreferrer">
-                  <span>{link.label}</span>
-                  <small>OPEN ↗</small>
-                </a>
-              ) : (
-                <div className="resource-disabled" key={link.label}>
-                  <span>{link.label}</span>
-                  <small>待添加网址</small>
-                </div>
-              ),
-            )}
-          </div>
+          {project.links.length > 0 && (
+            <div className="resource-column">
+              <span className="resource-column-title">EXTERNAL LINKS</span>
+              {project.links.map((link) =>
+                link.url ? (
+                  <a key={link.label} href={link.url} target="_blank" rel="noreferrer">
+                    <span>{link.label}</span>
+                    <small>OPEN ↗</small>
+                  </a>
+                ) : (
+                  <div className="resource-disabled" key={link.label}>
+                    <span>{link.label}</span>
+                    <small>待添加网址</small>
+                  </div>
+                ),
+              )}
+            </div>
+          )}
 
           {project.files.length > 0 && (
             <div className="resource-column">

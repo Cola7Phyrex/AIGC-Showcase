@@ -1166,7 +1166,7 @@ a:focus-visible {
 
 .detail-facts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   margin-top: 72px;
   background: var(--line);
@@ -1336,7 +1336,8 @@ a:focus-visible {
   gap: 12px;
 }
 
-.resource-grid-links-only {
+.resource-grid-links-only,
+.resource-grid-single-column {
   grid-template-columns: minmax(0, 1fr);
 }
 

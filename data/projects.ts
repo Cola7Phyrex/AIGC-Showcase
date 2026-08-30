@@ -238,6 +238,13 @@ export const projects: Project[] = [
         layout: "contained",
       },
     ],
+    links: [
+      {
+        label: "资源下载",
+        kind: "website",
+        url: "https://pan.quark.cn/s/2ba9080064b1?pwd=AKxg",
+      },
+    ],
   }),
   createProject({
     order: 3,
@@ -351,8 +358,8 @@ export const projects: Project[] = [
     statusTone: "building",
     accent: "#ff496c",
     accentSecondary: "#ffb54a",
-    coverImage: "/projects/project-04/cover04.jpg",
-    coverAlt: "Crazy Tide 怪物军团游戏封面",
+    coverImage: "/projects/project-04/cover04.2.jpg",
+    coverAlt: "Crazy Tide 线框星球游戏封面",
     media: [
       {
         id: "project-04-case-01",
@@ -877,6 +884,7 @@ export const projects: Project[] = [
         url: "https://pan.quark.cn/s/52ef9c4dc4b4?pwd=H6fV",
       },
     ],
+    files: [],
   }),
   createProject({
     order: 9,
@@ -966,6 +974,7 @@ export const projects: Project[] = [
         url: "https://www.douyin.com/user/self?from_tab_name=main&modal_id=7663717720172898548",
       },
     ],
+    files: [],
   }),
   createProject({
     order: 10,
@@ -1055,6 +1064,7 @@ export const projects: Project[] = [
         url: "https://www.bilibili.com/video/BV1C3Ka62EJQ/?vd_source=f9e32369c8efcfeb9411098cb99df85a",
       },
     ],
+    files: [],
   }),
   createProject({
     order: 11,
@@ -1124,6 +1134,7 @@ export const projects: Project[] = [
         url: "https://www.douyin.com/user/self?modal_id=7660058879272116980",
       },
     ],
+    files: [],
   }),
   createProject({
     order: 12,
@@ -1186,6 +1197,14 @@ export const projects: Project[] = [
         layout: "quartet",
       },
     ],
+    links: [
+      {
+        label: "抖音视频",
+        kind: "video",
+        url: "https://www.douyin.com/user/self?from_tab_name=main&modal_id=7651088934831581760",
+      },
+    ],
+    files: [],
   }),
   createProject({
     order: 13,
@@ -1248,6 +1267,7 @@ export const projects: Project[] = [
         layout: "full",
       },
     ],
+    links: [],
     files: [
       {
         label: "AI News 项目附件",
