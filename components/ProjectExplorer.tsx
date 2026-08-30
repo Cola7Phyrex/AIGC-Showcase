@@ -19,7 +19,18 @@ const clamp = (value: number, minimum = 0, maximum = 1) =>
 const mix = (start: number, end: number, amount: number) =>
   start + (end - start) * amount;
 
-export function ProjectExplorer({ projects }: { projects: Project[] }) {
+const withBasePath = (path: string, basePath: string) => {
+  const base = basePath.endsWith("/") ? basePath : `${basePath}/`;
+  return `${base}${path.replace(/^\/+/, "")}`;
+};
+
+export function ProjectExplorer({
+  projects,
+  basePath = "/",
+}: {
+  projects: Project[];
+  basePath?: string;
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [category, setCategory] = useState("全部");
   const [overlay, setOverlay] = useState<Overlay>(null);
@@ -59,7 +70,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
   const enterProject = () => {
     if (navigationLocked.current) return;
     navigationLocked.current = true;
-    window.location.assign(`/projects/${activeProject.slug}`);
+    window.location.assign(withBasePath(`projects/${activeProject.slug}/`, basePath));
   };
 
   const openProject = () => {
@@ -350,7 +361,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                     {project.coverImage && (
                       <img
                         className="project-cover-image"
-                        src={project.coverImage}
+                        src={withBasePath(project.coverImage, basePath)}
                         alt=""
                         aria-hidden="true"
                       />
@@ -448,7 +459,7 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                       "--card-accent-secondary": project.accentSecondary,
                       ...(project.coverImage
                         ? {
-                            backgroundImage: `linear-gradient(135deg, rgba(5, 6, 10, 0.08), rgba(5, 6, 10, 0.32)), url("${project.coverImage}")`,
+                            backgroundImage: `linear-gradient(135deg, rgba(5, 6, 10, 0.08), rgba(5, 6, 10, 0.32)), url("${withBasePath(project.coverImage, basePath)}")`,
                           }
                         : {}),
                     } as CSSProperties

@@ -91,8 +91,26 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 
 - `npm run dev`: start local development
 - `npm run build`: verify the vinext build output
+- `npm run build:github-pages`: build the independent static GitHub Pages site
+- `npm run preview:github-pages`: preview the static build locally
 - `npm test`: build the starter and verify its rendered loading skeleton
 - `npm run db:generate`: generate Drizzle migrations after schema changes
+
+## GitHub Pages
+
+The GitHub Pages build is independent from the Sites deployment. It reuses the
+same project data, styles, and public assets, then produces a static site in
+`dist-github-pages/`. The existing Sites configuration remains unchanged.
+
+To publish:
+
+1. Push this repository to GitHub using `main` as the default branch.
+2. Open **Settings → Pages** in the GitHub repository.
+3. Set **Build and deployment → Source** to **GitHub Actions**.
+4. Run **Deploy GitHub Pages** from the Actions tab, or push to `main`.
+
+The workflow detects whether the repository is a user site
+(`owner.github.io`) or a project site and configures asset paths automatically.
 
 ## Learn More
 
