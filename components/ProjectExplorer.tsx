@@ -446,6 +446,11 @@ export function ProjectExplorer({ projects }: { projects: Project[] }) {
                     {
                       "--card-accent": project.accent,
                       "--card-accent-secondary": project.accentSecondary,
+                      ...(project.coverImage
+                        ? {
+                            backgroundImage: `linear-gradient(135deg, rgba(5, 6, 10, 0.08), rgba(5, 6, 10, 0.32)), url("${project.coverImage}")`,
+                          }
+                        : {}),
                     } as CSSProperties
                   }
                 />

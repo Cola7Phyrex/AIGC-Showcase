@@ -101,7 +101,7 @@ function createProject(project: ProjectDraft): Project {
 
 export const projects: Project[] = [
   createProject({
-    order: 1,
+    order: 10,
     slug: "project-01",
     title: "Lornveil 雨冠危机",
     type: "DND模组",
@@ -188,7 +188,7 @@ export const projects: Project[] = [
     ],
   }),
   createProject({
-    order: 2,
+    order: 11,
     slug: "project-02",
     title: "Lornveil — DM Agent",
     type: "Agent",
@@ -247,7 +247,7 @@ export const projects: Project[] = [
     ],
   }),
   createProject({
-    order: 3,
+    order: 9,
     slug: "project-03",
     title: "DND Arena",
     type: "基于 D&D 5e 规则的角色构筑与战斗测试平台",
@@ -342,7 +342,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 4,
+    order: 8,
     slug: "project-04",
     title: "Crazy Tide",
     type: "MUD 风格的怪物创造与世界征服 H5 游戏",
@@ -482,7 +482,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 5,
+    order: 4,
     slug: "project-05",
     title: "Yishu Neon",
     type: "离线优先的易经与梅花易数 PWA 工具",
@@ -592,9 +592,9 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 6,
+    order: 5,
     slug: "project-06",
-    title: "Behaviour II",
+    title: "Behavior II",
     type: "用于习惯养成和行为记录的移动端 PWA",
     category: "应用与工具",
     platforms: ["HTML", "PWA", "Cloudflare 后端"],
@@ -707,7 +707,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 7,
+    order: 6,
     slug: "project-07",
     title: "TakeMyTime",
     type: "原生 iOS 日程管理应用",
@@ -797,7 +797,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 8,
+    order: 7,
     slug: "project-08",
     title: "PEKING Mahjong",
     type: "纪念碑谷风格的北京麻将单机游戏",
@@ -887,7 +887,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 9,
+    order: 1,
     slug: "project-09",
     title: "JOYRIDE Mountain Road",
     type: "Pop Art 与美式漫画风格的 AI 动画短片",
@@ -977,7 +977,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 10,
+    order: 2,
     slug: "project-10",
     title: "AIGC 视频制作十步法",
     type: "从导演思维出发的 AIGC 视频工作流教程",
@@ -1067,7 +1067,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 11,
+    order: 3,
     slug: "project-11",
     title: "Emeya POV",
     type: "超写实风格的 AI 跑山纪实短片",
@@ -1137,7 +1137,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 12,
+    order: 13,
     slug: "project-12",
     title: "自媒体运营",
     type: "面向自媒体运营的多模态内容生产工作流",
@@ -1207,7 +1207,7 @@ export const projects: Project[] = [
     files: [],
   }),
   createProject({
-    order: 13,
+    order: 12,
     slug: "project-13",
     title: "AI News",
     type: "每日 AI 情报收集与整理系统",
@@ -1277,7 +1277,7 @@ export const projects: Project[] = [
       },
     ],
   }),
-];
+].sort((first, second) => first.order - second.order);
 
 export function getProject(slug: string) {
   return projects.find((project) => project.slug === slug);

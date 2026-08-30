@@ -926,6 +926,9 @@ a:focus-visible {
     radial-gradient(circle at 70% 25%, var(--card-accent-secondary), transparent 20%),
     radial-gradient(circle at 30% 70%, var(--card-accent), transparent 28%),
     #11141a;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .index-number {
