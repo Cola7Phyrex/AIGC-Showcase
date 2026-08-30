@@ -136,3 +136,15 @@ test("server-renders the Behaviour II showcase media and download links", async 
   assert.match(html, /https:\/\/pan\.quark\.cn\/s\/6a1e616c8be8\?pwd=5mGk/);
   assert.ok((html.match(/media-quartet/g) ?? []).length >= 8);
 });
+
+test("server-renders the TakeMyTime showcase media and iOS link", async () => {
+  const response = await render("/projects/project-07");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /TakeMyTime/);
+  assert.match(html, /\/projects\/project-07\/cover07\.jpg/);
+  assert.match(html, /\/projects\/project-07\/case07-6\.jpg/);
+  assert.match(html, /https:\/\/pan\.quark\.cn\/s\/52037ce95b3e\?pwd=ChPu/);
+  assert.ok((html.match(/media-triplet/g) ?? []).length >= 6);
+});
