@@ -358,8 +358,8 @@ export const projects: Project[] = [
     statusTone: "building",
     accent: "#ff496c",
     accentSecondary: "#ffb54a",
-    coverImage: "/projects/project-04/cover04.2.jpg",
-    coverAlt: "Crazy Tide 线框星球游戏封面",
+    coverImage: "/projects/project-04/cover04.3.jpg",
+    coverAlt: "Crazy Tide 怪物军团游戏封面",
     media: [
       {
         id: "project-04-case-01",
