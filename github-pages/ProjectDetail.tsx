@@ -152,6 +152,7 @@ export function ProjectDetail({
         </div>
       </section>
 
+      {(project.links.length > 0 || project.files.length > 0) && (
       <section className="content-section resources-section">
         <div className="section-label"><span>03</span><span>LINKS / FILES</span></div>
         <div className="section-heading-row"><h2>内容链接 / 源文件</h2></div>
@@ -192,6 +193,7 @@ export function ProjectDetail({
           )}
         </div>
       </section>
+      )}
 
       <nav className="next-projects" aria-label="项目间导航">
         {previous && (

@@ -462,6 +462,7 @@ a:focus-visible {
   letter-spacing: -0.075em;
   line-height: 0.89;
   text-wrap: balance;
+  white-space: pre-line;
 }
 
 .project-copy h2 {

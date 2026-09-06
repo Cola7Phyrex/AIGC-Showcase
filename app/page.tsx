@@ -17,12 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: "Phyrex",
-    description: "以流体交互开场的十三项 AIGC 沉浸式作品展厅。",
+    description: "以流体交互开场的十四项 AIGC 沉浸式作品展厅。",
     openGraph: {
       type: "website",
       locale: "zh_CN",
       title: "Phyrex — AIGC Works",
-      description: "以流体交互开场的十三项 AIGC 沉浸式作品展厅。",
+      description: "以流体交互开场的十四项 AIGC 沉浸式作品展厅。",
       url: origin,
       images: [
         {
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "Phyrex — AIGC Works",
-      description: "以流体交互开场的十三项 AIGC 沉浸式作品展厅。",
+      description: "以流体交互开场的十四项 AIGC 沉浸式作品展厅。",
       images: [socialImage],
     },
   };

@@ -217,6 +217,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </section>
 
+      {(project.links.length > 0 || project.files.length > 0) && (
       <section className="content-section resources-section">
         <div className="section-label">
           <span>03</span>
@@ -279,6 +280,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           )}
         </div>
       </section>
+      )}
 
       <nav className="next-projects" aria-label="项目间导航">
         {previous && (

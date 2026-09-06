@@ -1277,6 +1277,50 @@ export const projects: Project[] = [
       },
     ],
   }),
+  createProject({
+    order: 14,
+    slug: "project-14",
+    title: "Helena\nCodex Pet",
+    type: "Codex 桌面端的自定义动画宠物",
+    category: "Agent 应用",
+    platforms: ["macOS", "透明 WebP 精灵图动画"],
+    coreTool: "GPT-5.6 / GPT Image 2 / Codex",
+    auxiliaryTools: [],
+    description:
+      "Helena 是一款为 Codex 桌面端设计的徽章式 AIGC 动画宠物：以不同动作反馈任务运行、等待输入、完成与失败等工作状态。通过 AIGC 完成角色设计、动作生成、16 向视线系统和自动化图集验证，最终输出适配 macOS 的透明 WebP v2 精灵图。",
+    highlight:
+      "从角色视觉到状态动画，Helena 将 Codex 的后台工作进程转化为一套可感知的桌面陪伴体验；16 向视线与自动化图集验证，则让生成式角色资产真正满足产品级动画规范。",
+    status: "已完成",
+    statusTone: "complete",
+    accent: "#ff4f9a",
+    accentSecondary: "#f2a178",
+    coverImage: "/projects/project-14/cover14.jpg",
+    coverAlt: "Helena Codex Pet 自定义动画宠物项目封面",
+    media: [
+      {
+        id: "project-14-case-01",
+        kind: "image",
+        orientation: "landscape",
+        label: "Helena Codex Pet 项目展示 01",
+        src: "/projects/project-14/case14-1.jpg",
+        alt: "Helena Codex Pet 动画宠物项目展示 01",
+        aspectRatio: "16 / 9",
+        layout: "full",
+      },
+      {
+        id: "project-14-case-02",
+        kind: "image",
+        orientation: "landscape",
+        label: "Helena Codex Pet 项目展示 02",
+        src: "/projects/project-14/case14-2.jpg",
+        alt: "Helena Codex Pet 动画宠物项目展示 02",
+        aspectRatio: "1920 / 1081",
+        layout: "full",
+      },
+    ],
+    links: [],
+    files: [],
+  }),
 ].sort((first, second) => first.order - second.order);
 
 export function getProject(slug: string) {

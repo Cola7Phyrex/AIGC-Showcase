@@ -29,19 +29,35 @@ async function render(pathname = "/") {
   );
 }
 
-test("server-renders the thirteen-project spatial index", async () => {
+test("server-renders the fourteen-project spatial index", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /Phyrex — AIGC Works/i);
-  assert.match(html, /13(?:<!-- -->)? PROJECTS/);
+  assert.match(html, /14(?:<!-- -->)? PROJECTS/);
   assert.match(html, /Phyrex/);
   assert.match(html, /REALTIME DISTORTION/);
   assert.match(html, /Lornveil 雨冠危机/);
   assert.match(html, /Codex \/ GPT-5\.5/);
   assert.match(html, /https:\/\/portfolio\.example\/og\.png/);
+});
+
+test("server-renders the Helena Codex Pet showcase", async () => {
+  const response = await render("/projects/project-14");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Helena/);
+  assert.match(html, /Codex Pet/);
+  assert.match(html, /Codex 桌面端的自定义动画宠物/);
+  assert.match(html, /GPT-5\.6 \/ GPT Image 2 \/ Codex/);
+  assert.match(html, /透明 WebP 精灵图动画/);
+  assert.match(html, /\/projects\/project-14\/cover14\.jpg/);
+  assert.match(html, /\/projects\/project-14\/case14-1\.jpg/);
+  assert.match(html, /\/projects\/project-14\/case14-2\.jpg/);
+  assert.ok((html.match(/media-featured/g) ?? []).length >= 2);
 });
 
 test("server-renders a complete project detail page", async () => {
@@ -50,7 +66,7 @@ test("server-renders a complete project detail page", async () => {
 
   const html = await response.text();
   assert.match(html, /Lornveil 雨冠危机/);
-  assert.match(html, /图片 \/ 视频预览/);
+  assert.match(html, />预览</);
   assert.match(html, /内容链接 \/ 源文件/);
   assert.match(html, /小红书作品页/);
   assert.match(html, /https:\/\/xhslink\.cn\/o\/ADemJJbkaC/);
@@ -60,7 +76,7 @@ test("server-renders a complete project detail page", async () => {
   assert.match(html, /洛恩维尔雨冠危机 DM 手册/);
   assert.equal((html.match(/href="\/#works"/g) ?? []).length, 2);
   assert.match(html, /WHY IT STANDS OUT/);
-  assert.match(html, /href="\/projects\/project-13"/);
+  assert.match(html, /href="\/projects\/project-03"/);
   assert.match(html, /href="\/projects\/project-02"/);
 });
 
